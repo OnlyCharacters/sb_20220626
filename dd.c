@@ -11,6 +11,8 @@
 #include <sys/types.h>
 #include <signal.h>
 /* kill() */
+#include <sys/wait.h>
+/* waitpid() */
 
 #define URL_MAX_LEN 2084
 #define True        1
@@ -56,19 +58,12 @@ get_url(char* uri)
     return True;
 }
 
-// int
-// get_url(char* uri)
-// {
-//     char* uri_temp = "https://ibwwekdw20220629.oss-cn-shenzhen.aliyuncs.com/20220629/xjj_205100_sign.apk?OSSAccessKeyId=LTAI5t9HmPoNzsJjnV3pvaU3&Expires=1656505258&Signature=FwlLb0XBRkI3J7wfjBKZ5vVpVVg%3D";
-//     snprintf(uri, URL_MAX_LEN, "%s", uri_temp);
-//     return True;
-// }
-
 int
 main(int argc, char** argv)
 {
-    pid_t child;
-    char uri[URL_MAX_LEN];
+    pid_t	child;
+	int		status;
+    char	uri[URL_MAX_LEN];
 
     while (True) {
         if (get_url(uri) == True) {
@@ -90,8 +85,9 @@ main(int argc, char** argv)
             /**    Parent    **/
             else {
                 printf("Parent\n");
-                sleep(180);
+                sleep(290);
                 kill(child, SIGKILL);
+				waitpid(child, &status, 0);
                 fprintf(stderr, "epoch done\n");
             }
         }
